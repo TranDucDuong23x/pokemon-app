@@ -1,98 +1,101 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+
+import { Platform, StyleSheet, View, Image, Text, ScrollView, Pressable } from 'react-native';
 
 import { HelloWave } from '@/components/hello-wave';
 import ParallaxScrollView from '@/components/parallax-scroll-view';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
+import { useEffect, useState } from 'react';
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  interface Pokemon {
+    name: string;
+    image: string;
+    imageBack: string;
+    type: pokemonType;
+  }
+  interface pokemonType {
+    name: string;
+    url: string;
+  }
+  const [pokemonList, setPokemonList] = useState<Pokemon[]>([]);
+  const colorByType: Record<string, string> = {
+    grass: "green",
+    fire: "red",
+    water: "blue",
+    bug: "lightgreen",
+    normal: "gray",
+    poison: "purple",
+    electric: "yellow",
+    ground: "brown",
+    fairy: "pink",
+    fighting: "orange",
+    psychic: "violet",
+    rock: "darkgray",
+    ghost: "indigo",
+    ice: "lightblue",
+    dragon: "darkblue",
+    dark: "black",
+    steel: "silver",
+    flying: "skyblue"
+  }// Map of Pokemon types to colors
+  useEffect(() => {
+    fetchPokemonData();
+  }, []);
+  async function fetchPokemonData() {
+    try {
+      const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=10');
+      const data = await response.json();
+      console.log('Fetched Pokemon Data:', data);
+      const pokemonData: Pokemon[] = await Promise.all(
+        data.results.map(async (pokemon: any) => {
+          const req = await fetch(pokemon.url);
+          const res = await req.json();
+          return {
+            name: res.name,
+            image: res.sprites.front_default,
+            imageBack: res.sprites.back_default,
+            type: res.types[0].type,
+          };
+        })
+      )
+      setPokemonList(pokemonData);
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    } catch (error) {
+      console.error('Error fetching Pokemon data:', error);
+    }
+  }
+  return (
+    <ScrollView >
+      <ThemedText style={{ fontSize: 20 }}>Welcome to Pokemon App</ThemedText>
+      {pokemonList.flatMap((item: any, index) => (
+        <Link key={item.name} href={`/details?name=${item.name}`} style={[styles.name, { backgroundColor: colorByType[item.type.name], padding: 8, borderRadius: 8, marginTop: 8 }]}>
+          <ThemedText>
+            {item.name}
+            <Text style={styles.type}>({item.type.name}) </Text>
+            <br></br>
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 4 }}>
+              <Image source={{ uri: item.image }} style={{ width: 150, height: 150 }} />
+              <Image source={{ uri: item.imageBack }} style={{ width: 150, height: 150 }} />
+            </View>
+          </ThemedText>
+        </Link>
+      ))}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  name: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  type: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: "black",
+    textAlign: 'center'
+  }
 });
