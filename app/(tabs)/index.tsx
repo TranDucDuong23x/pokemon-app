@@ -52,6 +52,17 @@ export default function HomeScreen() {
         data.results.map(async (pokemon: any) => {
           const req = await fetch(pokemon.url);
           const res = await req.json();
+          const request = await fetch("http://localhost:5000/api/pokemons",{
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                name: res.name,
+                type: res.types[0].type.name,
+              })
+          })
+          const response = await request.json();
           return {
             name: res.name,
             image: res.sprites.front_default,
@@ -61,6 +72,7 @@ export default function HomeScreen() {
         })
       )
       setPokemonList(pokemonData);
+      console.log('Processed Pokemon Data:', pokemonData);
 
     } catch (error) {
       console.error('Error fetching Pokemon data:', error);

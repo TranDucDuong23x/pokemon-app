@@ -48,3 +48,11 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+npm install @prisma/client
+mongodb không cần adapter
+npx prisma -v: kiểm tra phiên bản quả prisma
+prisma phiên bản 7 trở lên là phải cài adapter mới chạy được
+prisma dưới phiên bản 7 thì không cần adapter
+npm install @prisma/client@6.19: Tải @prisma/client phiên bản 6.19
+npm uninstall <ten_package> : xóa package

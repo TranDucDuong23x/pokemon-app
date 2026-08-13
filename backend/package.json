@@ -7,10 +7,18 @@
   "type": "modulejs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node --watch src/server.js"
   },
   "devDependencies": {
     "dotenv": "^17.4.2",
-    "prisma": "^7.9.1"
+    "prisma": "6.19"
+  },
+  "dependencies": {
+    "@google/genai": "^2.17.0",
+    "@prisma/client": "6.19",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "mongodb": "^7.5.0"
   }
 }

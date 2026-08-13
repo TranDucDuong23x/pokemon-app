@@ -14,7 +14,6 @@ export default function HomeScreen() {
   return (
     <ScrollView >
         <ThemedText style={{fontSize:18}}>Details for: {name}</ThemedText>
-
     </ScrollView>
   );
 }
