@@ -11,9 +11,19 @@ import { useLocalSearchParams, useSearchParams } from 'expo-router/build/hooks';
 
 export default function HomeScreen() {
   const {name} = useLocalSearchParams();
+  const [description,setDescription] = useState()
+  const handleGetName = async () => {
+      const request = await fetch(`http://localhost:5000/api/pokemons/${name}`)
+      const response = await request.json()
+      setDescription(response)
+  }
+  useEffect(() => {
+    handleGetName()
+  },[])
   return (
     <ScrollView >
         <ThemedText style={{fontSize:18}}>Details for: {name}</ThemedText>
+        <ThemedText style={{fontSize:18}}>{description}</ThemedText>
     </ScrollView>
   );
 }

@@ -56,3 +56,4 @@ prisma phiên bản 7 trở lên là phải cài adapter mới chạy được
 prisma dưới phiên bản 7 thì không cần adapter
 npm install @prisma/client@6.19: Tải @prisma/client phiên bản 6.19
 npm uninstall <ten_package> : xóa package
+GEMINI_API_KEY được lấy từ google AI Studio

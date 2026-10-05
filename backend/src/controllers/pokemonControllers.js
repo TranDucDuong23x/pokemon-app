@@ -5,28 +5,42 @@ export const getAllPokemons = async (req, res) => {
         const pokemons = await prisma.pokemon.findMany();
         res.status(200).json(pokemons);
     } catch (error) {
-        res.status(500).json({ message: "Error fetching pokemons", error });
+        res.status(500).json({ message: "Error fetching pokemons", error:{
+            name:error.name,
+            message: error.message,
+            stack:error.stack
+        } });
     }
 };
 
-export const getPokemonById = async (req, res) => {
-    const { id } = req.params;
+export const getPokemonByName = async (req, res) => {
+    const { name } = req.params;
     try {
         const pokemon = await prisma.pokemon.findUnique({
-            where: { id },
+            where: { name },
         });
         if (!pokemon) {
             return res.status(404).json({ message: "Pokemon not found" });
         }   
-        res.status(200).json(pokemon);
+        return res.status(200).json(pokemon.description);
     } catch (error) {
-        res.status(500).json({ message: "Error fetching pokemon", error });
+        return res.status(500).json({ message: "Error fetching pokemon", error:{
+            name:error.name,
+            message:error.message,
+            stack:error.stack
+        } });
     }
 };
 
 export const createPokemon = async (req, res) => {
     const { name, type } = req.body;
     try {
+        const checkExist = await prisma.pokemon.findUnique({
+            where: { name },
+        });
+        if (checkExist) {
+            return res.status(400).json({ message: "Pokemon with this name already exists" });
+        }
         const description = await generatePokemonDescription(name, type);
         const newPokemon = await prisma.pokemon.create({
             data: {
@@ -45,26 +59,9 @@ export const createPokemon = async (req, res) => {
     }
 };
 
-export const updatePokemon = async (req, res) => {
-    const { name } = req.params;
-    try {
-        const getTypeByName = await prisma.pokemon.findUnique({
-            where: { name }
-        });
-        const updatedPokemon = await prisma.pokemon.update({
-            where: { name },
-            data: {
-                 description : await generatePokemonDescription(name, getTypeByName.type),
-            },
-        });
-        return res.status(200).json({ message: "Pokemon updated successfully", updatedPokemon });
-    } catch (error) {
-        res.status(500).json({ message: "Error updating pokemon", error });
-    }   
-};
 
 export const deletePokemon = async (req, res) => {
-    const { id } = req.params;
+    const { name } = req.params;
     try {
         await prisma.pokemon.delete({
             where: { id },
@@ -72,6 +69,6 @@ export const deletePokemon = async (req, res) => {
         return res.status(200).json({ message: "Pokemon deleted successfully" });
     }
     catch (error) {
-        res.status(500).json({ message: "Error deleting pokemon", error });
+        return res.status(500).json({ message: "Error deleting pokemon", error });
     }
 };

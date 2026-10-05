@@ -1,10 +1,5 @@
-
-import { Platform, StyleSheet, View, Image, Text, ScrollView, Pressable } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
+import {StyleSheet, View, Image, Text, ScrollView } from 'react-native';
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { Link } from 'expo-router';
 import { useEffect, useState } from 'react';
 
@@ -80,7 +75,7 @@ export default function HomeScreen() {
   }
   return (
     <ScrollView >
-      <ThemedText style={{ fontSize: 20 }}>Welcome to Pokemon App</ThemedText>
+      <ThemedText style={{fontSize: 20 }} >Welcome to Pokemon App</ThemedText>
       {pokemonList.flatMap((item: any, index) => (
         <Link key={item.name} href={`/details?name=${item.name}`} style={[styles.name, { backgroundColor: colorByType[item.type.name], padding: 8, borderRadius: 8, marginTop: 8 }]}>
           <ThemedText>

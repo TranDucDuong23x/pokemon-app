@@ -1,11 +1,10 @@
-import {getAllPokemons, getPokemonById, createPokemon, updatePokemon, deletePokemon} from '../controllers/pokemonControllers.js';
+import {getAllPokemons, createPokemon, deletePokemon, getPokemonByName} from '../controllers/pokemonControllers.js';
 import express from 'express';
 const router = express.Router();
 
 router.get('/pokemons', getAllPokemons);
-router.get('/pokemons/:id', getPokemonById);
+router.get('/pokemons/:name', getPokemonByName);
 router.post('/pokemons', createPokemon);
-router.put('/pokemons/:name', updatePokemon);
-router.delete('/pokemons/:id', deletePokemon);
+router.delete('/pokemons/:name', deletePokemon);
 
 export default router;
