@@ -66,6 +66,7 @@ export default function HomeScreen() {
           };
         })
       )
+      
       setPokemonList(pokemonData);
       console.log('Processed Pokemon Data:', pokemonData);
 
